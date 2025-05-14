@@ -1,0 +1,36 @@
+vocab_size: 128000 # NOTE: keep it multiple of 128/256 
+                   # plus you can even reduce by how many tokens you want to add 
+special_tokens:  # list of intial special tokens
+  - "<|endoftext|>"
+  - "<|beginoftext|>"
+  - "<|image|>"
+  - "<|audio|>"
+
+dataset_name: "fhai50032/pds-tk" # Hf dataset for training tokenizer need this 
+                                 # we mainly use data augmentation 
+                                 # to emulate probabilistic pre-tokenization
+text_column: "text"   # column in dataset used for training.
+# aug_max_chunk_len: 25   ## Deprecated 
+separator: "#$TinyCompany@&"  # for augmenting dataset ; can be any **unique** filler string
+test_distribution:   # Gaussian/normal distribution over chunk lengths (chars) 
+                     # must add to 1
+  "4-5": 0.044
+  "6-7": 0.091
+  "8-9": 0.146
+  "10-11": 0.171
+  "12-13": 0.185
+  "14-15": 0.171
+  "16-17": 0.146
+  "18-19": 0.091
+  "20-21": 0.044
+  "22-23": 0.011
+output_path: "Super-Tokenizer-128k"
+push_to_hub: # <--- Please edit this with your HuggingFace info!
+  repo_id: "tinycompany/SuperTK-128k"
+  token: "hf_xxx"  
+min_frequency: 2  # BBPE's min frequency
+show_progress: true
+initial_alphabet: null  # uses default
+max_token_length: 30 # max character length in a token for BBPE tokenizer.
+continuing_subword_prefix: ""
+model_max_length: 8192
