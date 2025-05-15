@@ -106,7 +106,10 @@ tokenizer.normalizer = normalizers.Sequence([
 
 tokenizer.pre_tokenizer = pre_tokenizers.Sequence([
     pre_tokenizers.Split(
-        pattern=Regex(re.escape(SEPARATOR)),
+        pattern=Regex(re.escape(SEPARATOR)+r"|(.)\1{6}"), # +r"|(.)\1{6}" Removes excess 6n multiple of any repeating character i.e
+                                                          # aaaaaaaa  -> aa (removed 6xa ) ; removes repaeting character in mod 6.
+                                                          # (.{1,5})\1{5} ## use this for 5 or more ngram of size 1-5
+                                                          # removes repaeting ngram in mod 5. 
         behavior="removed",
         invert=False,
     ),
@@ -150,6 +153,15 @@ tokenizer.train_from_iterator(
     get_corpus(),
     trainer=trainer,
     length=None 
+)
+
+
+tokenizer.pre_tokenizer = pre_tokenizers.Sequence(
+    pre_tokenizers.ByteLevel(
+        add_prefix_space=False,
+        trim_offsets=True,
+        use_regex=False
+    ),
 )
 
 tokenizer.save(OUTPUT_PATH)
